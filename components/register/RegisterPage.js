@@ -1,12 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../../assects/images/brand.svg'
 import apple from '../../assects/images/apple.svg'
 import google from '../../assects/images/google.svg'
 import Image from 'next/image';
 import Link from 'next/link';
+import axiosInstance from "../../helper/axiosInstance";
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 const RegisterPage = () => {
     const backgroundImage = "https://www.evernote.com/static/static_css_resources/bb6ce0ce7affff91989d4aab2ba9fa53.png";
+
+    const router = useRouter();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) =>{
+        e.preventDefault();
+        if (!name || !email || !password) {
+            toast.error('Please enter name , email and password');
+            return;
+          }
+        try{
+            setLoading(true);
+            const { data } = await axiosInstance.post(
+                `/register`, {name, email, password});
+            console.log( data);
+            setLoading(false);
+            if(data?.error){
+                toast.error(data?.error)
+                setLoading(false);
+            }
+
+            else{
+                toast.success(" Registration Successful")
+                router.push('/login')
+            }
+        }
+        catch(error){
+            console.log(error);
+            toast.error(error?.response?.data?.error || " Registration Faild. Try again.")
+            setLoading(false);
+        }
+    };
 
     return (
         <div style={{ backgroundImage: `url(${backgroundImage})` , minHeight: "100vh" , top: '-5'}}>
@@ -33,25 +71,49 @@ const RegisterPage = () => {
                     <p className="px-3 text-gray-400 text-sm">or</p>
                     <hr className="w-full text-black"/>
                 </div>
-                <form action="" className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <input type="text" name="name" id="name" placeholder="Enter Your Name" className="form_control " />
+                            <input 
+                                type="text" 
+                                name="name" 
+                                id="name" 
+                                placeholder="Enter Your Name" 
+                                value={name} 
+                                onChange={(e) => setName(e.target.value)} 
+                                className="form_control " 
+                            />
                         </div>
                         <div className="space-y-2">
-                            <input type="email" name="email" id="email" placeholder="Enter Your Email" className="form_control " />
+                            <input 
+                                type="email" 
+                                name="email" 
+                                id="email" 
+                                placeholder="Enter Your Email" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                className="form_control " 
+                            />
                         </div>
                         <div className="space-y-2">
-                            <input type="password" name="password" id="password" placeholder=" Enter Password" className="form_control " />
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="password" 
+                                placeholder=" Enter Password" 
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)} 
+                                className="form_control " 
+                            />
                         </div>
-                        {/* <label class=" block text-gray-600">
-                            <input class="mr-2 leading-tight" type="checkbox"/>
-                            <span class="text-xs">
+                        {/* <label className" block text-gray-600">
+                            <input className"mr-2 leading-tight" type="checkbox"/>
+                            <span className"text-xs">
                             By creating an account, you are agreeing to our Terms of Service and Privacy Policy.
                             </span>
                         </label> */}
                     </div>
-                    <button type="button" className="w-full btn-primary">Sign Up</button>
+                    <button type="submit" className="w-full btn-primary" disabled={loading}>{loading? 'Submitting...' : 'Sign Up'}</button>
                     <div className="md:w-60 mx-auto -pt-4">
                     {/* <small className='text-xs text-gray-600 text-center'>By creating an account, you are agreeing to our Terms of Service and Privacy Policy.</small> */}
                     </div>

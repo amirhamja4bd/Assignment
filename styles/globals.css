@@ -22,6 +22,11 @@ ul li a{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.096)!important;
   transition: all .3s ease-in-out;
 }
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+
 
 /* :root {
   --foreground-rgb: 0, 0, 0;

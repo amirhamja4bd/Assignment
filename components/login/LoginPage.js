@@ -1,12 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../../assects/images/brand.svg'
 import apple from '../../assects/images/apple.svg'
 import google from '../../assects/images/google.svg'
 import Image from 'next/image';
 import Link from 'next/link';
+import axios from 'axios';
+import { setToken } from '@/helper/FormHHelper';
+import axiosInstance from "../../helper/axiosInstance";
+import { useRouter } from 'next/router';
+import { toast } from 'react-hot-toast';
 
 const LoginPage = () => {
     const backgroundImage = "https://www.evernote.com/static/static_css_resources/bb6ce0ce7affff91989d4aab2ba9fa53.png";
+
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!email || !password) {
+      toast.error('Please enter name and password');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axiosInstance.post('/login', { email, password });
+
+      // Handle the response
+      if (response.status === 200) {
+        setToken(response.data.token);
+        toast.success('Login Success');
+        setEmail('');
+        setPassword('');
+        router.push('/')
+      } else {
+        toast.error('Invalid Email or Password');
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error?.response?.data?.error || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return (
         <div style={{ backgroundImage: `url(${backgroundImage})` , minHeight: "100vh" , top: '-5'}}>
@@ -33,23 +73,39 @@ const LoginPage = () => {
                     <p className="px-3 text-gray-400 text-sm">or</p>
                     <hr className="w-full text-black"/>
                 </div>
-                <form action="" className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <input type="email" name="email" id="email" placeholder="Enter Email" className="form_control " />
+                            <input 
+                                type="email" 
+                                name="email" 
+                                id="email" 
+                                placeholder="Enter Email" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                className="form_control " 
+                            />
                         </div>
                         <div className="space-y-2">
-                            <input type="password" name="password" id="password" placeholder=" Enter Password" className="form_control " />
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="password" 
+                                placeholder=" Enter Password" 
+                                className="form_control "
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)} 
+                            />
                         </div>
-                        <label class="md:w-2/3 block text-gray-600">
-                            <input class="mr-2 leading-tight" type="checkbox"/>
-                            <span class="text-sm">
+                        <label className="md:w-2/3 block text-gray-600">
+                            <input className="mr-2 leading-tight" type="checkbox"/>
+                            <span className="text-sm">
                                 Remember me
                             </span>
                         </label>
 
                     </div>
-                    <button type="button" className="w-full btn-primary">Login</button>
+                    <button type="submit" className="w-full btn-primary" disabled={loading}>{loading ? 'Submitting...' : 'Login'}</button>
                         <p className="text-sm text-center text-gray-600">Dont have account?
                             <Link href="/signUp" className="focus:underline hover:underline text-primary ps-2">Sign up here</Link>
                         </p>
