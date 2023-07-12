@@ -5,6 +5,8 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import { RxCross1 } from 'react-icons/rx';
+import arrow from '../../assects/images/arrow-down.svg';
+import FeaturesMenu from '../cards/FeaturesMenu';
 
 const NavBar = () => {
 
@@ -64,12 +66,16 @@ const NavBar = () => {
                 WHY EVERNOTE
               </Link>
             </li>
-            <li className="border-b py-3 pb-5 w-full lg:w-auto lg:mx-3 lg:border-b-4 lg:border-b-transparent  lg:hover:border-primary transition-left ease-in-out duration-300">
+            <li className="border-b py-3 pb-5 w-full lg:w-auto lg:mx-3 lg:border-b-4 lg:border-b-transparent lg:hover:border-primary group transition-left ease-in-out duration-300">
               <Link className="text-black hover:text-primary text-base font-semibold transition-left ease-in-out duration-300" href="#">
                 FEATURES
               </Link>
+              <ul className=" hidden shadow-md sm:w-8/12 md:w-8/12 lg:w-full bg-white w-8/12 h-fit overflow-hidden absolute left-28 sm:left-40 md:left-40 lg:left-0 group-hover:top-24 sm:group-hover:top-20 group-hover:block " >
+                <FeaturesMenu />
+              </ul>
             </li>
 
+            
             <li className="border-b py-3 pb-5 w-full lg:w-auto lg:mx-3 lg:border-b-4 lg:border-b-transparent  lg:hover:border-primary transition-left ease-in-out duration-300">
               <Link className="text-black hover:text-primary text-base font-semibold transition-left ease-in-out duration-300" href="#">
                 FOR INDIVIDUALS

@@ -11,7 +11,7 @@ const Hero = () => {
                     <p className="px-8 mt-8 mb-12 text-xl">Remember everything and tackle any project with your notes, tasks, and schedule all in one place.</p>
                     <div className="flex flex-wrap justify-center">
                         <Link href='/signUp'>
-                            <button type="button" className="w-full btn-primary">Sign Up For Free</button>
+                            <button type="button" className="w-full btn-primary">Sign Up For Free </button>
                         </Link>
                     </div>
                 </div>
